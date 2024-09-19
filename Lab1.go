@@ -7,7 +7,7 @@ import (
 
 func craeteMatrix() [][]float32 {
 	var size int
-	fmt.Printf("Введите размер матрицы: ")
+	fmt.Printf("Введите размер  частот матрицы: ")
 	fmt.Scanf("%d\n", &size)
 
 	fmt.Println("Заполнение матрицы")
