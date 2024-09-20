@@ -78,10 +78,6 @@ func countMatrix(matrix [][]float32) []float32 {
 		}
 	}
 
-	for _, value := range b {
-		fmt.Print(value)
-	}
-
 	var answerds = make([]float32, size)
 	for i := (size - 1); i >= 0; i-- {
 		if i == (size - 1) {
