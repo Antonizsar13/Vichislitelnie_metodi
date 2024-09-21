@@ -7,7 +7,7 @@ import (
 
 func craeteMatrix() [][]float32 {
 	// var size int
-	// fmt.Printf("Введите размер  частот матрицы: ")
+	// fmt.Printf("Введите размер частот матрицы: ")
 	// fmt.Scanf("%d\n", &size)
 	//
 	// fmt.Println("Заполнение матрицы")
@@ -22,8 +22,8 @@ func craeteMatrix() [][]float32 {
 
 	matrix := [][]float32{
 		{10, 1, 1, 12},
-		{2, 10, 1, 13},
-		{2, 2, 10, 14},
+		{2, 1, 1, 13},
+		{2, 2, 1, 14},
 	}
 
 	return matrix
@@ -59,6 +59,8 @@ func countMatrix(matrix [][]float32, maxIterations int)  []float32 {
 					sum += matrix[i][j] * approximation[j]
 				}
 			}
+
+
 			newApproximation[i] = matrix[i][len(matrix)] - sum
 
 		}
@@ -86,7 +88,7 @@ func main() {
 	fmt.Println("Вывод матрицы")
 	outputMatrix(matrix)
 
-	answerd := countMatrix(matrix, 100)
+	answerd := countMatrix(matrix, 1000)
 
 	for i, value := range answerd {
 		fmt.Printf("x[%d] = %f\n", i, value)

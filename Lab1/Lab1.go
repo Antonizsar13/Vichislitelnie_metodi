@@ -6,25 +6,31 @@ import (
 )
 
 func craeteMatrix() [][]float32 {
-	var size int
-	fmt.Printf("Введите размер  частот матрицы: ")
-	fmt.Scanf("%d\n", &size)
+	// var size int
+	// fmt.Printf("Введите размер  частот матрицы: ")
+	// fmt.Scanf("%d\n", &size)
 
-	fmt.Println("Заполнение матрицы")
-	var matrix = make([][]float32, size)
-	for i := range matrix {
-		matrix[i] = make([]float32, size+1)
-		for j := range matrix[i] {
-			fmt.Printf("[%d][%d]=", i, j)
-			fmt.Scanf("%f\n", &matrix[i][j])
-		}
-	}
+	// fmt.Println("Заполнение матрицы")
+	// var matrix = make([][]float32, size)
+	// for i := range matrix {
+	// 	matrix[i] = make([]float32, size+1)
+	// 	for j := range matrix[i] {
+	// 		fmt.Printf("[%d][%d]=", i, j)
+	// 		fmt.Scanf("%f\n", &matrix[i][j])
+	// 	}
+	// }
 
 	// matrix := [][]float32{
 	// 	{2, 3, -1, 7},
 	// 	{1, -1, 6, 14},
-	// 	{6, -2, 1, 11},
+	// 	{6, 9, -3, 21},
 	// }
+
+	matrix := [][]float32{
+		{10, 1, 1, 12},
+		{2, 1, 1, 13},
+		{2, 2, 1, 14},
+	}
 
 	return matrix
 }
@@ -92,8 +98,10 @@ func main() {
 	outputMatrix(matrix)
 	for step := 0; step < len(matrix); step++ {
 		choosingMainElement(&matrix, step)
+		fmt.Println("Главный элемент")
 		outputMatrix(matrix)
 		dataNormalization(&matrix, step)
+		fmt.Println("Нормализация")
 		outputMatrix(matrix)
 		excludingElements(&matrix, step)
 		outputMatrix(matrix)
