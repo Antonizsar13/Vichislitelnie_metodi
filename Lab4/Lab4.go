@@ -24,9 +24,13 @@ func enterEquations() []Element {
 	// 	fmt.Scan(&elements[i].degree)
 	// }
 
-	elements := []Element{{1, 3},
-		{4, 1},
-		{-3, 0}}
+	// elements := []Element{{1, 3},
+	// 	{4, 1},
+	// 	{-3, 0}}
+
+		elements := []Element{{1, 3},
+		{-1, 0},
+		{2, 1}}
 
 	return elements
 }
@@ -44,15 +48,14 @@ func printEquations(equations []Element) {
 }
 
 func derivative(equations []Element) []Element {
-	equationsNew := make([]Element, len(equations))
-	copy(equationsNew, equations)
-	for i, element := range equationsNew {
-		if element.degree == 0 {
-			copy(equationsNew[i:], equationsNew[i+1:])
-			equationsNew = equationsNew[:len(equationsNew)-1]
-		} else {
-			equationsNew[i].number *= float64(element.degree)
-			equationsNew[i].degree--
+	var equationsNew []Element
+	for _, element := range equations {
+		if element.degree > 0 {
+			newElement := Element{
+				number: element.number * float64(element.degree),
+				degree: element.degree - 1,
+			}
+			equationsNew = append(equationsNew, newElement)
 		}
 	}
 	return equationsNew
