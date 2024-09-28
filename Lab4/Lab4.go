@@ -28,9 +28,12 @@ func enterEquations() []Element {
 	// 	{4, 1},
 	// 	{-3, 0}}
 
-		elements := []Element{{1, 3},
+	elements := []Element{{1, 3},
 		{-1, 0},
 		{2, 1}}
+
+	// elements := []Element{{1, 2},
+	// {-10000, 0}}
 
 	return elements
 }
@@ -73,7 +76,7 @@ func calculateFunction(Xn float64, equations []Element) float64 {
 
 func main() {
 	var Xn float64 = 1
-	var E float64 = 0.001
+	var E float64 = 1e-06
 
 	equations := enterEquations()
 	printEquations(equations)
@@ -91,10 +94,10 @@ func main() {
 			answerd2 := calculateFunction(Xn2, derivativeEq)
 
 			different = answerd1 / answerd2
-
-			Xn2 = Xn2 - different
 			fmt.Printf("%f\t| %f\t| %f\t| %f\n", Xn2, answerd1, answerd2, different)
+			Xn2 = Xn2 - different
 		}
+		fmt.Printf("\nX = %f\n", Xn2)
 
 	}
 
