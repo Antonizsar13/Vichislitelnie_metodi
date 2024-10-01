@@ -88,8 +88,9 @@ func main() {
 		fmt.Printf("\nНачальное приближение = %f\n", Xn2)
 		fmt.Println("X\t| F(Xn)\t| F′(Xn)\t| diff")
 		var different float64 = E
+		var index int = 0;
 		for math.Abs(different) >= E {
-
+			index ++ 
 			answerd1 := calculateFunction(Xn2, equations)
 			answerd2 := calculateFunction(Xn2, derivativeEq)
 
@@ -97,7 +98,7 @@ func main() {
 			fmt.Printf("%f\t| %f\t| %f\t| %f\n", Xn2, answerd1, answerd2, different)
 			Xn2 = Xn2 - different
 		}
-		fmt.Printf("\nX = %f\n", Xn2)
+		fmt.Printf("\nX = %f Количество итераций = %d\n", Xn2, index)
 
 	}
 
