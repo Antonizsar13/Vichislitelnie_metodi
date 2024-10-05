@@ -107,7 +107,7 @@ func main() {
 	// interval := findIntervals(equations)
 	// fmt.Print(interval)
 
-	intervals := []Interval{{-5, 1}, {2, 7}}
+	intervals := []Interval{{-5, 1}, {0, 5}}
 	var c float64
 	Es := []float64{0.1, 0.01, 0.001}
 
