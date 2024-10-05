@@ -32,9 +32,6 @@ func enterEquations() []Element {
 		{-1, 0},
 		{2, 1}}
 
-	// elements := []Element{{1, 2},
-	// {-10000, 0}}
-
 	return elements
 }
 
@@ -83,7 +80,7 @@ func main() {
 
 	derivativeEq := derivative(equations)
 	printEquations(derivativeEq)
-	for i := Xn; i <= 1024; i *= 2 {
+	for i := Xn; i <= 128; i *= 2 {
 		var Xn2 float64 = i
 		fmt.Printf("\nНачальное приближение = %f\n", Xn2)
 		fmt.Println("X\t| F(Xn)\t| F′(Xn)\t| diff")
