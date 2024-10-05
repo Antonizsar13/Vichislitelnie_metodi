@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"sort"
 )
 
 type Element struct {
@@ -75,67 +74,79 @@ type Interval struct {
 	end   float64
 }
 
-func findIntervals(equations []Element) Interval {
-	sort.Sort(ByDegree(equations))
-	maxA := math.Abs(equations[1].number)
-	maxB := math.Abs(equations[0].number)
-	for i, value := range equations {
-		if i > 1 {
-			if maxA < math.Abs(value.number) {
-				maxA = math.Abs(value.number)
-			}
-		}
-		if i < (len(equations) - 1) {
-			if maxB < math.Abs(value.number) {
-				maxB = math.Abs(value.number)
-			}
-		}
-	}
+// func findIntervals(equations []Element) Interval {
+// 	sort.Sort(ByDegree(equations))
+// 	maxA := math.Abs(equations[1].number)
+// 	maxB := math.Abs(equations[0].number)
+// 	for i, value := range equations {
+// 		if i > 1 {
+// 			if maxA < math.Abs(value.number) {
+// 				maxA = math.Abs(value.number)
+// 			}
+// 		}
+// 		if i < (len(equations) - 1) {
+// 			if maxB < math.Abs(value.number) {
+// 				maxB = math.Abs(value.number)
+// 			}
+// 		}
+// 	}
 
-	var interval Interval
-	start := 1 / (1 + (maxB / math.Abs(equations[len(equations)-1].number)))
-	end := 1 + (maxA / math.Abs(equations[0].number))
-	interval.start, interval.end = start, end
+// 	var interval Interval
+// 	start := 1 / (1 + (maxB / math.Abs(equations[len(equations)-1].number)))
+// 	end := 1 + (maxA / math.Abs(equations[0].number))
+// 	interval.start, interval.end = start, end
 
-	return interval
-}
+// 	return interval
+// }
 
 func main() {
 
 	equations := enterEquations()
 	printEquations(equations)
 
-	interval := findIntervals(equations)
+	// interval := findIntervals(equations)
+	// fmt.Print(interval)
 
-	fmt.Print(interval)
+	intervals := []Interval{{-5, 1}, {2, 7}}
+	var c float64
+	Es := []float64{0.1, 0.01, 0.001}
 
-	// var a, b float64 = 1, 5
-	// var c float64
-	// var E float64 = 0.01
+	for _, interval := range intervals {
+		a := interval.start
+		b := interval.end
 
-	// Fa := calculateFunction(a, equations)
-	// Fb := calculateFunction(b, equations)
+		fmt.Printf("\nИнтервал: {%f; %f}", a, b)
 
-	// if Fa*Fb >= 0 {
-	// 	fmt.Println("\nФункция не меняет знак на данном интервале. Выберите другие точки.")
-	// 	return
-	// }
+		Fa := calculateFunction(a, equations)
+		Fb := calculateFunction(b, equations)
 
-	// var index int = 0
-	// // Fa := calculateFunction(a, equations)
-	// for math.Abs(b-a) > E {
-	// 	index++
-	// 	c = (a + b) / 2
-	// 	Fc := calculateFunction(c, equations)
+		if Fa*Fb >= 0 {
+			fmt.Printf("\nФункция не меняет знак на интервале {%f; %f}. Выберите другие точки.", a, b)
+			break
+		}
+		for _, value := range Es {
+			E := value
+			var index int = 0
+			for {
+				c = (a + b) / 2
+				Fc := calculateFunction(c, equations)
 
-	// 	if Fa*Fc < 0 {
-	// 		b = c
-	// 		Fb = Fc
-	// 	} else {
-	// 		a = c
-	// 		Fa = Fc
-	// 	}
-	// }
+				if math.Abs(b-a) <= E {
+					break
+				}
 
-	// fmt.Printf("\nОтвет: %f. Точность: %f. Количество итераций: %d", c, E, index)
+				if Fa*Fc < 0 {
+					b = c
+					Fb = Fc
+				} else {
+					a = c
+					Fa = Fc
+				}
+
+				index++
+			}
+
+			fmt.Printf("\nОтвет: %f. Точность: %f. Количество итераций: %d", c, E, index)
+		}
+	}
 }
