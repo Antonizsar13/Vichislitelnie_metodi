@@ -56,7 +56,6 @@ func gaussQuadrature(a, b float64, n int, F func(float64) float64) float64 {
 	integral := 0.0
 	timeI := 0
 	for i := 0; i < n; i++ {
-		fmt.Print(timeI)
 		integral += w[n][timeI] * F(0.5*(a+b+t[n][i]*(b-a)))
 		if i%2 != 0 {
 			timeI++

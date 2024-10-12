@@ -123,10 +123,7 @@ func main() {
 	}
 
 	fmt.Printf("Ответ по Лагранжу: %.20f\n", answerdL)
-	// fmt.Print(answerdL)
 
 	answerdE := aitkenInterpolation(table, XforCount, E)
 	fmt.Printf("Ответ по Эйткена: %.20f\n", answerdE)
-	// fmt.Print(answerdE)
-
 }
