@@ -70,7 +70,7 @@ func aitkenInterpolation(table []Table, X float64, E float64) float64 {
 	var prevValue float64
 	for i := 0; i < n; i++ {
 		Q[i] = make([]float64, n)
-		Q[i][0] = table[i].FXi // Initial values are fx
+		Q[i][0] = table[i].FXi
 	}
 
 	for j := 1; j < n; j++ {
@@ -81,14 +81,14 @@ func aitkenInterpolation(table []Table, X float64, E float64) float64 {
 		if j > 1 {
 			relativeError := math.Abs((Q[0][j]-prevValue))
 			if relativeError < E {
-				return Q[0][j] // Return the interpolated value if error is below tolerance
+				return Q[0][j] 
 			}
 		}
-		prevValue = Q[0][j] // Update previous value for next iteration
+		prevValue = Q[0][j] 
 	}
 	
 
-	return Q[0][n-1] // Return the interpolated value
+	return Q[0][n-1] 
 }
 
 func main() {
