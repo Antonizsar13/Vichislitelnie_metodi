@@ -10,31 +10,28 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
-func eulerMethod(f func(float64, float64) float64, u0 float64, h float64, xStart float64, xEnd float64) []float64 {
-	x := xStart
-	u := u0
-	uValues := []float64{u}
+func adamsBashforth3(f func(float64, float64) float64, u0, u1, u2 float64, h float64, xStart float64, xEnd float64) []float64 {
+	uValues := []float64{u0, u1, u2}
+	x := xStart + 2*h
 
 	for x < xEnd {
-		u += h * f(x, u)
+		uNext := uValues[len(uValues)-1] + (h/12)*(23*f(x-h, uValues[len(uValues)-1])-16*f(x-2*h, uValues[len(uValues)-2])+5*f(x-3*h, uValues[len(uValues)-3]))
+		uValues = append(uValues, uNext)
 		x += h
-		uValues = append(uValues, u)
 	}
 
 	return uValues
 }
 
-func simmetrMethod(f func(float64, float64) float64, u0 float64, h float64, xStart float64, xEnd float64) []float64 {
-	x := xStart
-	u := u0
-	uValues := []float64{u}
+func adamsMoulton3(f func(float64, float64) float64, u0, u1, u2 float64, h float64, xStart float64, xEnd float64) []float64 {
+	uValues := []float64{u0, u1, u2}
+	x := xStart + 2*h
 
 	for x < xEnd {
 		uPrev := uValues[len(uValues)-1]
-		uNow := uPrev + h*f(x-h, uPrev)
-		u := uPrev + h/2*(f(x-h, uPrev)+f(x+h, uNow))
+		uNext := uPrev + (h/24)*(9*f(x, uPrev)+19*f(x-h, uValues[len(uValues)-2])-5*f(x-2*h, uValues[len(uValues)-3]))
+		uValues = append(uValues, uNext)
 		x += h
-		uValues = append(uValues, u)
 	}
 
 	return uValues
@@ -53,29 +50,28 @@ func accurate(exactFunc func(float64) float64, h float64, xStart float64, xEnd f
 }
 
 func f1(x float64, u float64) float64 {
-	return x*x + 3*u
+	return u + math.Pow(x, 2)
 }
 func f2(x float64, u float64) float64 {
-	return 2*u + 4*x
+	return x * u
 }
 func f3(x float64, u float64) float64 {
-	return 2*u + math.Exp(x)
+	return math.Exp(x) + u
 }
 
 func exactSolution1(x float64) float64 {
-	return (56.0/27.0)*math.Exp(3*x) - (1.0/3.0)*x*x - (2.0/9.0)*x - (2.0 / 27.0)
+	return -math.Pow(x,2) -2*x+ 3* math.Exp(x) -2
 }
 
 func exactSolution2(x float64) float64 {
-	return -2*x + 2*math.Exp(2*x) - 1
+	return 2 * math.Exp((math.Pow(x, 2) / 2))
 }
 
 func exactSolution3(x float64) float64 {
-	return (math.Exp(x) * (math.Exp(x) - 1))
+	return (math.Exp(x) + x*math.Exp(x))
 }
 
 func creategrafig(name string, xStart float64, xEnd float64, h float64, u1 []float64, u2 []float64, u3 []float64) {
-
 	p := plot.New()
 
 	p.Title.Text = name
@@ -88,21 +84,18 @@ func creategrafig(name string, xStart float64, xEnd float64, h float64, u1 []flo
 	}
 
 	pts1 := make(plotter.XYs, len(u1))
-
 	for i := range pts1 {
 		pts1[i].X = x[i]
 		pts1[i].Y = u1[i]
 	}
 
 	pts2 := make(plotter.XYs, len(u2))
-
 	for i := range pts2 {
 		pts2[i].X = x[i]
 		pts2[i].Y = u2[i]
 	}
 
 	pts3 := make(plotter.XYs, len(u3))
-
 	for i := range pts3 {
 		pts3[i].X = x[i]
 		pts3[i].Y = u3[i]
@@ -121,8 +114,8 @@ func creategrafig(name string, xStart float64, xEnd float64, h float64, u1 []flo
 	line3.LineStyle.Width = 2
 	p.Add(line1, line2, line3)
 
-	p.Legend.Add("Эйлер", line1)
-	p.Legend.Add("Симметричный", line2)
+	p.Legend.Add("Явный трёхшаговый", line1)
+	p.Legend.Add("Неявный трёхшаговый", line2)
 	p.Legend.Add("Точный", line3)
 
 	p.Legend.Top = true
@@ -131,12 +124,11 @@ func creategrafig(name string, xStart float64, xEnd float64, h float64, u1 []flo
 	if err := p.Save(8*vg.Inch, 8*vg.Inch, name+".png"); err != nil {
 		panic(err)
 	}
-
 }
 
 func printTable(xStart float64, xEnd float64, h float64, u1 []float64, u2 []float64, u3 []float64) {
 	fmt.Printf("%-10s %-15s %-15s %-15s %-15s %-15s\n", "", "", "", "", "", "")
-	fmt.Printf("%-10s %-15s %-15s %-15s %-15s %-15s\n", "h", "Эйлер", "Симметричный", "Точный", "Разница Эйлера", "Разница Симметричного")
+	fmt.Printf("%-10s %-15s %-15s %-15s %-15s %-15s\n", "h", "Явный", "Неявный", "Точный", "Разница Явного", "Разница Неявного")
 	fmt.Printf("%-10s %-15s %-15s %-15s %-15s %-15s\n", "", "", "", "", "", "")
 	for i := 0; i < len(u3); i++ {
 		eulerValue := u1[i]
@@ -156,36 +148,31 @@ func main() {
 
 	fmt.Println("Уравнение 1:")
 	for _, h := range hValues {
+		uValues1 := accurate(exactSolution1, h, 0, 1)
+		uValuesB := adamsBashforth3(f1, uValues1[0], uValues1[1], uValues1[2], h, 0, 1)
+		uValuesA := adamsMoulton3(f1, uValues1[0], uValues1[1], uValues1[2], h, 0, 1)
 
-		uValues := eulerMethod(f1, 2.0, h, 0, 2)
-		uValues2 := simmetrMethod(f1, 2.0, h, 0, 2)
-		uValues3 := accurate(exactSolution1, h, 0, 2)
-
-		printTable(0, 2, h, uValues, uValues2, uValues3)
-		creategrafig("График 1", 0, 2, h, uValues, uValues2, uValues3)
-
+		printTable(0, 2, h, uValuesB, uValuesA, uValues1)
+		creategrafig("График 1", 0, 2, h, uValuesB, uValuesA, uValues1)
 	}
 
-	fmt.Println("Уравнение 2:")
-	for _, h := range hValues {
-		uValues := eulerMethod(f2, 1.0, h, 0, 1)
-		uValues2 := simmetrMethod(f2, 1.0, h, 0, 1)
-		uValues3 := accurate(exactSolution2, h, 0, 1)
+	// fmt.Println("Уравнение 2:")
+	// for _, h := range hValues {
+	// 	uValues1 := accurate(exactSolution2, h, 0, 1)
+	// 	uValuesB := adamsBashforth3(f2, uValues1[0], uValues1[1], uValues1[2], h, 0, 2)
+	// 	uValuesA := adamsMoulton3(f2, uValues1[0], uValues1[1], uValues1[2], h, 0, 2)
 
-		printTable(0, 1, h, uValues, uValues2, uValues3)
+	// 	printTable(0, 1, h, uValuesB, uValuesA, uValues1)
+	// 	creategrafig("График 2", 0, 1, h, uValuesB, uValuesA, uValues1)
+	// }
 
-		creategrafig("График 2", 0, 1, h, uValues, uValues2, uValues3)
-	}
+	// fmt.Println("Уравнение 3:")
+	// for _, h := range hValues {
+	// 	uValues1 := accurate(exactSolution3, h, 0, 1)
+	// 	uValuesB := adamsBashforth3(f3, uValues1[0], uValues1[1], uValues1[2], h, 0, 1)
+	// 	uValuesA := adamsMoulton3(f3, uValues1[0], uValues1[1], uValues1[2], h, 0, 1)
 
-	fmt.Println("Уравнение 3:")
-	for _, h := range hValues {
-		uValues := eulerMethod(f3, 0.0, h, 0, 1)
-		uValues2 := simmetrMethod(f3, 0.0, h, 0, 1)
-		uValues3 := accurate(exactSolution3, h, 0, 1)
-
-		printTable(0, 1, h, uValues, uValues2, uValues3)
-
-		creategrafig("График 3", 0, 1, h, uValues, uValues2, uValues3)
-	}
-
+	// 	printTable(0, 1, h, uValuesB, uValuesA, uValues1)
+	// 	creategrafig("График 3", 0, 1, h, uValuesB, uValuesA, uValues1)
+	// }
 }
