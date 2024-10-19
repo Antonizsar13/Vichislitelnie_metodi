@@ -13,12 +13,12 @@ type Interval struct {
 }
 
 func f(x float64, y float64, z float64) float64 {
-	// return x
+	return x
 	// return x * math.Pow(y,2)
 	// return math.Sin(y) * x
 	// return x * math.Pow(z, 3)
 	// return math.Pow(x,3)
-	return x* math.Exp(y)
+	// return x* math.Exp(y)
 }
 
 func main() {
